@@ -1,0 +1,22 @@
+name: 'Docker Retags'
+description: 'Receives a tag as input as tags to other tag names'
+inputs:
+  original-tag:
+    description: 'original tag'
+    required: true
+    default: ''
+  new-tags:
+    description: 'new tags'
+    required: true
+    default: ''
+runs:
+  using: "composite"
+  steps:
+    - name: Retag images
+      shell: bash
+      run: |
+        IFS=',' read -ra ADDR <<< "${{ inputs.new-tags }}"
+        for i in "${ADDR[@]}"; do
+          echo "Processing $i"
+          docker tag ${{ inputs.original-tag }} $i
+        done
